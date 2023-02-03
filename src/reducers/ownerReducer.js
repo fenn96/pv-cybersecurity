@@ -1,6 +1,5 @@
 const initialState = {
-  owner: {},
-  solarData: [{}]
+  owner: {}
 };
 
 export const setOwner = (owner) => ({
@@ -22,7 +21,7 @@ const ownerReducer = (state = initialState, action) => {
     case 'RESET_STATE':
       return {
         ...initialState
-      }
+      };
     default:
       return state;
   }

@@ -1,6 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { CategoryScale, LinearScale, PointElement, LineElement, Chart } from "chart.js";
+import { Line } from 'react-chartjs-2';
 import { setOwner, resetOwnerState } from './reducers/ownerReducer'
+import { setSolarData, resetSolarState } from './reducers/solarReducer'
 import { useField } from './hooks/index'
 import {
   BrowserRouter as Router,
@@ -8,6 +11,8 @@ import {
 } from "react-router-dom"
 import ownerService from './services/owner'
 import loginService from './services/login'
+
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement)
 
 const Login = (props) => {
 
@@ -101,16 +106,20 @@ const Register = (props) => {
 }
 
 const Dashboard = (props) => {
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const owner = useSelector(state => state.owner);
   const solarData = useSelector(state => state.solarData);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const cookie = document.cookie
       .split(';')
       .find((c) => c.trim().startsWith('token='));
 
-    if (cookie) {
+    if (!cookie) {
+      navigate('/');
+    } else {
       const token = cookie.split("=")[1];
       console.log(token)
 
@@ -120,19 +129,41 @@ const Dashboard = (props) => {
         },
       })
       .then((data) => {
-        dispatch(setOwner({
-          firstName: data.owner.firstName,
-          lastName: data.owner.lastName,
-          email: data.owner.email,
-          id: data.owner.id,
-          solarPanels: data.owner.solarPanels
-        }));
-      });
+        if (!data.authenticated) {
+          navigate('/');
+        } else {
+          dispatch(setOwner({
+            firstName: data.owner.firstName,
+            lastName: data.owner.lastName,
+            email: data.owner.email,
+            id: data.owner.id,
+            authenticated: data.authenticated,
+            solarData: data.owner.solarPanels[0].solarData
+          }));
+          setIsLoading(false);
+        }
+      })
     } 
     
   },[])
 
-  console.log(owner)
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  const data = {
+    labels: owner.solarData.map(data => new Date(data.time).toLocaleTimeString()),
+    datasets: [
+      {
+        label: 'Solar Panel Energy Output (kWh)',
+        data: owner.solarData.map(data => data.power),
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+        lineTension: 0
+      }
+    ]
+  }
 
   return (
     <div>
@@ -150,18 +181,7 @@ const Dashboard = (props) => {
       </nav>
       <main>
         <p>{owner.firstName}</p>
-        <div>
-          <h3>Voltage</h3>
-          <p>{solarData.voltage}</p>
-        </div>
-        <div>
-          <h3>Current</h3>
-          <p>{solarData.current}</p>
-        </div>
-        <div>
-          <h3>Power</h3>
-          <p>{solarData.power}</p>
-        </div>
+        <Line data={data} />
       </main>
     </div>
   )

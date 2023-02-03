@@ -11,7 +11,9 @@ ownersRouter.get('/', tokenExtractor, ownerExtractor, (request, response) => {
   Owner.findById(request.owner.id).populate('solarPanels', { solarData: 1})
     .then(owner => {
       if (!owner) {
-        return response.status(401)
+        return response.status(401).json({
+          authenticated: false
+        })
       }
       response.send({ authenticated: true, owner: owner.toJSON()})
     })

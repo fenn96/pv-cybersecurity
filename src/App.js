@@ -109,7 +109,7 @@ const Dashboard = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const owner = useSelector(state => state.owner);
-  const solarData = useSelector(state => state.solarData);
+  const date = new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric' });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -143,6 +143,11 @@ const Dashboard = (props) => {
           setIsLoading(false);
         }
       })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          navigate('/');
+        }
+      });
     } 
     
   },[])
@@ -152,15 +157,31 @@ const Dashboard = (props) => {
   }
 
   const data = {
-    labels: owner.solarData.map(data => new Date(data.time).toLocaleTimeString()),
+    labels: owner.solarData.map(data => new Date(data.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })),
     datasets: [
       {
-        label: 'Solar Panel Energy Output (kWh)',
-        data: owner.solarData.map(data => data.power),
+        label: 'Voltage',
+        data: owner.solarData.map(data => data.voltage),
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         borderColor: 'rgba(255, 99, 132, 1)',
         borderWidth: 1,
-        lineTension: 0
+        lineTension: 0.2
+      },
+      {
+        label: 'Current',
+        data: owner.solarData.map(data => data.current),
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(13, 180, 185)',
+        borderWidth: 1,
+        lineTension: 0.2
+      },
+      {
+        label: 'Power',
+        data: owner.solarData.map(data => data.power),
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(178, 222, 39)',
+        borderWidth: 1,
+        lineTension: 0.2
       }
     ]
   }
@@ -181,6 +202,7 @@ const Dashboard = (props) => {
       </nav>
       <main>
         <p>{owner.firstName}</p>
+        <p>{date}</p>
         <Line data={data} />
       </main>
     </div>

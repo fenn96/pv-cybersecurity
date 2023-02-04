@@ -5,6 +5,7 @@ require('express-async-errors')
 const cors = require('cors')
 const loginRouter = require('./controllers/login')
 const ownerRouter = require('./controllers/owner')
+const solarRouter = require('./controllers/solar')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
@@ -25,6 +26,7 @@ app.use(express.json())
 
 app.use('/api/login', loginRouter)
 app.use('/api/owner', ownerRouter)
+app.use('/api/solar', solarRouter)
 
 if (process.env.NODE_ENV === 'test') {
   const testingRouter = require('./controllers/testing')

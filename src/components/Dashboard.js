@@ -62,7 +62,7 @@ const Dashboard = (props) => {
   // Filters solar data based on date
   const filteredData = owner.solarData.filter(data => new Date(data.time).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) === currentDate)
 
-  const data = {
+  const voltage = {
     labels: filteredData.map(data => new Date(data.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })),
     datasets: [
       {
@@ -72,7 +72,13 @@ const Dashboard = (props) => {
         borderColor: 'rgba(255, 99, 132, 1)',
         borderWidth: 1,
         lineTension: 0.2
-      },
+      }
+    ]
+  }
+
+  const current = {
+    labels: filteredData.map(data => new Date(data.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })),
+    datasets: [
       {
         label: 'Current',
         data: filteredData.map(data => data.current),
@@ -80,7 +86,13 @@ const Dashboard = (props) => {
         borderColor: 'rgba(13, 180, 185)',
         borderWidth: 1,
         lineTension: 0.2
-      },
+      }
+    ]
+  }
+
+  const power = {
+    labels: filteredData.map(data => new Date(data.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })),
+    datasets: [
       {
         label: 'Power',
         data: filteredData.map(data => data.power),
@@ -93,23 +105,41 @@ const Dashboard = (props) => {
   }
 
   return (
-    <div>
-      <h1>dashboard</h1>
-      <nav>
-        <NavLink to="/dashboard">
-          Dashboard
-        </NavLink>
-        <NavLink to="/analytics">
-          Analytics
-        </NavLink>
-        <NavLink onClick={props.logoutUser}>
-          Log out
-        </NavLink>
-      </nav>
-      <main>
+    <div class='container-fluid d-flex flex-column flex-md-row'>
+      <div class="sidebar-container">
+        <div class="sidebar">
+          <div class="d-flex flex-column align-items-center px-3 pt-2 text-white min-vh-100">
+            <nav class='nav nav-pills flex-column mb-md-auto mb-0 align-items-center'>
+              <NavLink to="/dashboard" className="nav-link">
+                <span class="material-symbols-outlined">dashboard</span>
+              </NavLink>
+              <NavLink to="/analytics" className="nav-link">
+                <span class="material-symbols-outlined">analytics</span>
+              </NavLink>
+              <NavLink onClick={props.logoutUser} style={{ position: 'absolute', bottom: 0 }}>
+                <span class="material-symbols-outlined">logout</span>
+              </NavLink>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class='flex-grow-1' style={{ paddingLeft: '80px' }}>
         <p>{owner.firstName}</p>
         <p>{currentDate}</p>
-        <Line data={data} />
+        <div class="d-flex row mt-4">
+            <div class="card col-3 border border-white shadow mx-auto">
+                <p>Voltage</p>
+                <Line data={voltage} />
+            </div>
+            <div class="card col-3 border border-white shadow mx-auto">
+                <p>Current</p>
+                <Line data={current} />
+            </div>
+            <div class="card col-3 border border-white shadow mx-auto">
+                <p>Power</p>
+                <Line data={power} />
+            </div>
+        </div>
       </main>
     </div>
   )

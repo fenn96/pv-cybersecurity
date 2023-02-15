@@ -22,32 +22,37 @@ const Register = (props) => {
     }
   
     return (
-      <div>
-        <h2>register</h2>
-        <p>{props.notification}</p>
-        <form onSubmit={handleSubmit}>
-          <div>
-            first name
-            <input {...firstName} />
+      <div class='container'>
+        <div class="row m-5 no-gutters shadow-lg">
+          <div class="col-md-6 d-none d-md-block">
+            <img src="https://images.unsplash.com/photo-1566888596782-c7f41cc184c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=2134&q=80" class="img-fluid" />
           </div>
-          <div>
-            last name
-            <input {...lastName} />
+          <div class='col-md-6 bg-white p-5'>
+            <h2>Sign Up</h2>
+            <p>{props.notification}</p>
+            <form onSubmit={handleSubmit}>
+              <div class='form-group pb-3'>
+                <input class='form-control' placeholder='First Name' {...firstName} />
+              </div>
+              <div class='form-group pb-3'>
+                <input class='form-control' placeholder='Last Name' {...lastName} />
+              </div>
+              <div class='form-group pb-3'>
+                <input class='form-control' placeholder='Email' {...email} />
+              </div>
+              <div class='form-group pb-3'>
+                <input class='form-control' placeholder='Password' {...password} />
+              </div>
+              <div class='form-group pb-3'>
+                <input class='form-control' placeholder='Repeat Password' {...passwordRepeat} />
+              </div>
+              <button class='btn btn-primary w-100 font-weight-bold mt-2'>Register</button>
+            </form>
+            <div class='pt-4 text-center'>
+              Return to <Link to="/">Login</Link>
+            </div>
           </div>
-          <div>
-            email
-            <input {...email} />
-          </div>
-          <div>
-            password
-            <input {...password} />
-          </div>
-          <div>
-            repeat password
-            <input {...passwordRepeat} />
-          </div>
-          <button>register</button><Link to="/"><button>login</button></Link>
-        </form>
+        </div>
       </div>
     )
   

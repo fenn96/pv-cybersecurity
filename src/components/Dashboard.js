@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate, NavLink } from "react-router-dom"
 import { setOwner } from '../reducers/ownerReducer'
-import { CategoryScale, LinearScale, PointElement, LineElement, Chart } from "chart.js";
+import { CategoryScale, LinearScale, PointElement, LineElement, Filler, Chart } from "chart.js";
 import { Line } from 'react-chartjs-2';
 import ownerService from '../services/owner'
 
-Chart.register(CategoryScale, LinearScale, PointElement, LineElement)
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Filler)
 
 const Dashboard = (props) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -69,23 +69,23 @@ const Dashboard = (props) => {
         label: 'Voltage',
         data: filteredData.map(data => data.voltage),
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        fill: true,
         borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 1,
-        lineTension: 0.2
+        borderWidth: 1
       }
     ]
   }
 
   const current = {
-    labels: filteredData.map(data => new Date(data.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })),
+    labels: filteredData.map(data => new Date(data.time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })),
     datasets: [
       {
         label: 'Current',
         data: filteredData.map(data => data.current),
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        backgroundColor: 'rgba(13, 180, 185, 0.2)',
+        fill: true,
         borderColor: 'rgba(13, 180, 185)',
-        borderWidth: 1,
-        lineTension: 0.2
+        borderWidth: 1
       }
     ]
   }
@@ -96,48 +96,67 @@ const Dashboard = (props) => {
       {
         label: 'Power',
         data: filteredData.map(data => data.power),
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        backgroundColor: 'rgba(178, 222, 39, 0.2)',
+        fill: true,
         borderColor: 'rgba(178, 222, 39)',
-        borderWidth: 1,
-        lineTension: 0.2
+        borderWidth: 1
       }
     ]
   }
 
+  const options = {
+    scales: {
+      yAxes: [
+        {
+          gridLines: {
+            color: "red"
+          }
+        }
+      ],
+      xAxes: [
+        {
+          gridLines: {
+            color: "blue"
+          }
+        }
+      ]
+    }
+  };
+
   return (
-    <div class='container-fluid d-flex flex-column flex-md-row'>
-      <div class="sidebar-container">
-        <div class="sidebar">
-          <div class="d-flex flex-column align-items-center px-3 pt-2 text-white min-vh-100">
-            <nav class='nav nav-pills flex-column mb-md-auto mb-0 align-items-center'>
+    <div class='d-flex'>
+      <div>
+        <div>
+          <div class="d-flex flex-column p-3 bg-dark min-vh-100">
+            <nav class='align-items-center'>
               <NavLink to="/dashboard" className="nav-link">
                 <span class="material-symbols-outlined">dashboard</span>
               </NavLink>
               <NavLink to="/analytics" className="nav-link">
                 <span class="material-symbols-outlined">analytics</span>
               </NavLink>
-              <NavLink onClick={props.logoutUser} style={{ position: 'absolute', bottom: 0 }}>
+              <NavLink onClick={props.logoutUser} className="nav-link" style={{ position: 'absolute', bottom: 0 }}>
                 <span class="material-symbols-outlined">logout</span>
               </NavLink>
             </nav>
           </div>
         </div>
       </div>
-      <main class='flex-grow-1' style={{ paddingLeft: '80px' }}>
-        <p>{owner.firstName}</p>
+      <main class='container-fluid pt-3' style={{ height: '100vh' }}>
+        <h4>Dashboard</h4>
         <p>{currentDate}</p>
-        <div class="d-flex row mt-4">
-            <div class="card col-3 border border-white shadow mx-auto">
-                <p>Voltage</p>
-                <Line data={voltage} />
+        <div class='d-flex flex-wrap'>
+            <div class="card card-shadow bg-dark col-4 shadow-lg p-3" style={{ height: '250px' }}>
+                <p class='text-center'>Voltage</p>
+                <Line data={voltage} height={250} options={{maintainAspectRatio: false}} />
             </div>
-            <div class="card col-3 border border-white shadow mx-auto">
-                <p>Current</p>
-                <Line data={current} />
+            <div class="card bg-dark col-4 shadow-lg p-3" style={{ height: '250px' }}>
+                <p class='text-center'>Current</p>
+                <Line data={current} height={250} options={{maintainAspectRatio: false}} />
             </div>
-            <div class="card col-3 border border-white shadow mx-auto">
-                <p>Power</p>
-                <Line data={power} />
+            <div class="card bg-dark col-4 shadow-lg p-3" style={{ height: '250px' }}>
+                <p class='text-center'>Power</p>
+                <Line data={power} height={250} options={{maintainAspectRatio: false}} />
             </div>
         </div>
       </main>

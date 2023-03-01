@@ -1,6 +1,7 @@
 body {
   margin: 0;
   color: white;
+  background-color: rgb(47, 47, 47);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -18,19 +19,42 @@ code {
 }
 
 main {
-  background-color: rgb(16, 16, 16);
-  color: rgb(214, 198, 198);
+  background-color: rgb(23, 23, 23);
+  color: white;
+  z-index: -1;
 }
 
 .material-symbols-outlined {
-  color: rgb(214, 198, 198);
   font-size: 34px;
   font-weight: 300;
   margin-bottom: 4px;
 }
 
+.levels {
+  z-index: 10;
+}
+
 .card {
   border-color: rgb(56, 52, 52);
+}
+
+.img-background {
+  background-image:
+  linear-gradient(90deg, rgb(38, 40, 36) 0%, rgba(58, 61, 55, 0.818) 73%, rgba(87, 88, 84, 0.613)),
+  url('https://www.nrel.gov/news/program/2022/images/20221024-increased-spacing-of-solar-panels-comes-with-benefits-65308.jpg');
+  background-size: cover;
+}
+
+.border-radius {
+  border-radius: 22px;
+}
+
+.input-border-radius {
+  border-radius: 18px;
+}
+
+.shadow-custom {
+  box-shadow: 0px 15px 50px rgb(16, 16, 16);
 }
 
 /*.data {

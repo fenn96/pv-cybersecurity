@@ -1,6 +1,5 @@
 import { useField } from '../hooks/index'
 import { Link } from "react-router-dom"
-import SidebarMenu from 'react-bootstrap-sidebar-menu'
 
 const Login = (props) => {
     const email = useField('text')
@@ -18,27 +17,29 @@ const Login = (props) => {
   
     return (
       <div class='container'>
-        <div class="row m-5 no-gutters shadow-lg">
-          <div class="col-md-6 d-none d-md-block">
-            <img src="https://images.unsplash.com/photo-1566888596782-c7f41cc184c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=2134&q=80" class="img-fluid" />
-          </div>
-          <div class='col-md-6 bg-white p-5'>
-            <h3 class='pb-3'>Sign In</h3>
-            <div class='form-style'>
-              <form onSubmit={handleSubmit}>
-                <div class='form-group pb-3'>
-                  <input class='form-control' placeholder='Email' {...email} />
-                </div>
-                <div class="form-group pb-3">
-                  <input class='form-control' placeholder='Password' {...password} />
-                </div>
-                <div class="form-group pb-3">
-                  <input class='form-control' placeholder='Repeat Password' {...passwordRepeat} />
-                </div>
-                <button class='btn btn-primary w-100 font-weight-bold mt-2'>Login</button>
-              </form>
-              <div class='pt-4 text-center'>
-                Not yet registered? <Link to="/signup">Sign Up</Link>
+        <div class="m-5">
+          <div class='img-background border-radius shadow-custom p-5' style={{ minHeight: 600 }}>
+            <p class='pb-3 fw-bold'>PV Solar Monitoring</p>
+            <div class='p-4'>
+              <h1 class='pb-2 pt-5'>Sign into your Account<span class='text-warning'>.</span></h1>
+              <div class='pb-5 text-secondary'>
+                Not yet registered? <Link to="/signup" className='text-warning text-decoration-none'>Sign Up</Link>
+              </div>
+              <div class='form-style pb-4 col-5'>
+                <form class='form-floating' onSubmit={handleSubmit}>
+                  <div class='form-group pb-3'>
+                    <input class='form-control border-dark input-border-radius bg-dark text-white form-control-lg' placeholder='Email' {...email} />
+                  </div>
+                  <div class="form-group pb-3">
+                    <input class='form-control border-dark input-border-radius bg-dark text-white form-control-lg' placeholder='Password' {...password} />
+                  </div>
+                  <div class="form-group pb-5">
+                    <input class='form-control border-dark input-border-radius bg-dark text-white form-control-lg' placeholder='Repeat Password' {...passwordRepeat} />
+                  </div>
+                  <div class='col-5'>
+                    <button class='btn btn-outline-warning btn-lg text-white w-100 font-weight-bold mt-2'>Login</button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

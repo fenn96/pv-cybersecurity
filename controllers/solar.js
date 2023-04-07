@@ -1,26 +1,37 @@
 const solarRouter = require('express').Router()
 const Solar = require('../models/solar')
 
+// GET METHOD for getting solar data and sorting by date added
+solarRouter.get('/:ownerId', (request, response) => {
+  const ownerId = request.params.ownerId;
+
+  Solar.findOne({ ownerId: ownerId }, (err, solar) => {
+    if (err) {
+      return response.status(500).json({ error: "Error finding solar data" });
+    }
+    if (!solar) {
+      return response.status(404).json({ error: "Solar data not found" });
+    }
+
+    let sortedSolarData = solar.solarData.sort((a, b) => a.time - b.time);
+    return response.status(200).json({ solarData: sortedSolarData });
+  });
+});
 
 // PUT METHOD for filling solarData for an associated owner with dummy data
 solarRouter.put('/:ownerId', (request, response) => {
     const ownerId = request.params.ownerId;
-    const currentTime = Date.now();
-    let solarData = [];
 
-    for (let i = 0; i < 24; i++) {
-      solarData.push({
-        voltage: Math.floor(Math.random() * 100),
-        current: Math.floor(Math.random() * 100),
-        power: Math.floor(Math.random() * 100),
-        time: new Date(currentTime + i * 60 * 60 * 1000)
-      });
-    }
+    let solarData = {
+      voltage: request.body.voltage,
+      current: request.body.current,
+      power: request.body.power,
+      time: Date.now()
+    };
 
     Solar.findOneAndUpdate(
       { ownerId: ownerId },
-      { $set: { solarData: solarData } },
-      { new: true },
+      { $push: { solarData: solarData } },
       (err, solar) => {
         if (err) {
             return response.status(500).json({ error: "Error updating solar data" });

@@ -25,6 +25,10 @@ const ownerSchema = new mongoose.Schema({
       ref: 'Solar'
     }
   ],
+  type: {
+    type: String,
+    default: 'User'
+  }
 })
 
 ownerSchema.set('toJSON', {

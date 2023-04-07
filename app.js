@@ -1,5 +1,6 @@
 const config = require('./utils/config')
 const express = require('express')
+const bodyParser = require('body-parser');
 const app = express()
 require('express-async-errors')
 const cors = require('cors')
@@ -20,9 +21,16 @@ mongoose.connect(config.MONGODB_URL)
   .catch((error) => {
     logger.error('error connecting to MongoDB:', error.message)
   })
+  
+const corsOptions ={
+    origin:'http://localhost:3000', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
 
 app.use(cors())
 app.use(express.json())
+app.use(bodyParser.json());
 
 app.use('/api/login', loginRouter)
 app.use('/api/owner', ownerRouter)

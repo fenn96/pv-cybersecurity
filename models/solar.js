@@ -22,6 +22,10 @@ const solarSchema = new mongoose.Schema({
       }
     }
   ],
+  geo: {
+    lat: Number,
+    lon: Number
+  },
   ownerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Owner'

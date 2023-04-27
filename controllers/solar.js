@@ -1,9 +1,10 @@
 const solarRouter = require('express').Router()
+const { tokenExtractor, ownerExtractor } = require('../utils/middleware')
 const Solar = require('../models/solar')
 
 // GET METHOD for getting solar data and sorting by date added
-solarRouter.get('/:ownerId', (request, response) => {
-  const ownerId = request.params.ownerId;
+solarRouter.get('/', tokenExtractor, ownerExtractor, (request, response) => {
+  const ownerId = request.owner.id;
 
   Solar.findOne({ ownerId: ownerId }, (err, solar) => {
     if (err) {
@@ -14,11 +15,32 @@ solarRouter.get('/:ownerId', (request, response) => {
     }
 
     let sortedSolarData = solar.solarData.sort((a, b) => a.time - b.time);
-    return response.status(200).json({ solarData: sortedSolarData });
+    return response.status(200).json({ authenticated: true, solarData: sortedSolarData });
   });
 });
 
-// PUT METHOD for filling solarData for an associated owner with dummy data
+solarRouter.put('/geo/:ownerId', async (request, response) => {
+  const { lat, lon } = request.body;
+  const ownerId = request.params.ownerId;
+
+  try {
+    Solar.findOneAndUpdate(
+      { ownerId: ownerId },
+      { $set: { geo: {lat: lat, lon: lon }} },
+      (err, solar) => {
+        if (err) {
+            return response.status(500).json({ error: "Error updating geolocation data" });
+        }
+        return response.status(200).json({ solar });
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+})
+
+// PUT METHOD for filling solarData for an associated owner
 solarRouter.put('/:ownerId', (request, response) => {
     const ownerId = request.params.ownerId;
 

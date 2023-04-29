@@ -1,6 +1,9 @@
 const solarRouter = require('express').Router()
-const { tokenExtractor, ownerExtractor } = require('../utils/middleware')
-const Solar = require('../models/solar')
+const { tokenExtractor, ownerExtractor, getWeatherData } = require('../utils/middleware')
+const Solar = require('../models/solar');
+const { default: axios } = require('axios');
+const OPENWEATHERAPI = process.env.OPEN_WEATHER_API;
+const iconURL = "../img/";
 
 // GET METHOD for getting solar data and sorting by date added
 solarRouter.get('/', tokenExtractor, ownerExtractor, (request, response) => {
@@ -18,6 +21,29 @@ solarRouter.get('/', tokenExtractor, ownerExtractor, (request, response) => {
     return response.status(200).json({ authenticated: true, solarData: sortedSolarData });
   });
 });
+
+solarRouter.put('/weather', tokenExtractor, ownerExtractor, getWeatherData, async (request, response) => {
+  const ownerId = request.owner.id;
+  const weather = request.weather;
+
+  try {
+    Solar.findOneAndUpdate(
+      { ownerId: ownerId },
+      { $set: { 
+        weather: weather
+      }},
+      (err, solar) => {
+        if (err) {
+            return response.status(500).json({ error: "Error updating weather data" });
+        }
+        return response.status(200).json(weather);
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+})
 
 solarRouter.put('/geo/:ownerId', async (request, response) => {
   const { lat, lon } = request.body;

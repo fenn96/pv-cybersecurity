@@ -8,13 +8,13 @@ const Solar = require('../models/solar')
 loginRouter.use(cookieParser())
 
 loginRouter.post('/', async (request, response) => {
-  const { email, password, passwordRepeat } = request.body
+  const { email, password } = request.body
 
-  if (password === passwordRepeat) {
+  try {
     const owner = await Owner.findOne({ email })
     const passwordCorrect = owner === null
       ? false
-      : await bcrypt.compare(password, owner.passwordHash)
+      : bcrypt.compare(password, owner.passwordHash)
 
     if(!owner || !passwordCorrect) {
       return response.status(401).json({
@@ -29,13 +29,16 @@ loginRouter.post('/', async (request, response) => {
 
     const token = jwt.sign(ownerForToken, process.env.SECRET, { expiresIn: 60*60 })
 
-    response.cookie('token', token)
-      .status(200)
-      .send({ id: owner.id, email: owner.email, firstName: owner.firstName, solarPanels: owner.solarPanels })
-  } else {
-    return response.status(400).json({
-      error: 'Passwords did not match'
-    })
+    response.cookie('token', token, {
+      httpOnly: true,
+      sameSite: "none",
+      maxAge: 60 * 60 * 1000 // 1 hour
+    }).status(200)
+      .send(token)
+  } catch {
+    response
+      .status(500)
+      .send()
   }
 })
 

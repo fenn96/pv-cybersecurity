@@ -26,6 +26,15 @@ const solarSchema = new mongoose.Schema({
     lat: Number,
     lon: Number
   },
+  weather: {
+    location: String,
+    description: String,
+    iconPath: String,
+    temp: Number,
+    temp_feels_like: Number,
+    humidity: Number,
+    wind_speed: Number
+  },
   ownerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Owner'

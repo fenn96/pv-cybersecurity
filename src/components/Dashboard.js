@@ -34,8 +34,7 @@ const Dashboard = (props) => {
               id: data.owner.id,
               authenticated: data.authenticated,
               type: data.owner.type,
-              geo: data.owner.geo,
-              solarData: data.owner.solarPanels[0].solarData
+              geo: data.owner.geo
             }));
             if ( data.owner.type === "Admin") {
               navigate('/admin');
@@ -105,7 +104,7 @@ const Dashboard = (props) => {
           <div>
             <div className="d-flex flex-column shadow-lg p-3 bg-dark min-vh-100">
               <nav className='align-items-center'>
-                <NavLink to="/dashboard" className="nav-link pb-2 pt-2">
+                <NavLink to="/dashboard" className="nav-link text-warning pb-2 pt-2">
                   <span className="material-symbols-outlined">dashboard</span>
                 </NavLink>
                 <NavLink to="/analytics" className="nav-link pb-2">
@@ -342,14 +341,14 @@ const Dashboard = (props) => {
       borderWidth: 1
     }
   }
-  console.log(owner)
+
   return (
     <div className='d-flex'>
       <div>
         <div>
           <div className="d-flex flex-column shadow-lg p-3 bg-dark min-vh-100">
             <nav className='align-items-center'>
-              <NavLink to="/dashboard" className="nav-link pb-2 pt-2">
+              <NavLink to="/dashboard" className="nav-link text-warning pb-2 pt-2">
                 <span className="material-symbols-outlined">dashboard</span>
               </NavLink>
               <NavLink to="/analytics" className="nav-link pb-2">

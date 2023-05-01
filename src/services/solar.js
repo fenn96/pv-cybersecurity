@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3003/api/solar/'
+const baseUrl = '/api/solar/'
 
 const getSolarData = async token => {
   const response = await axios.get(baseUrl, {

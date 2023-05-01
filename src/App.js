@@ -43,7 +43,8 @@ const App = () => {
 
   const handleLogout = async (user) => {
     try {
-      await loginService.logout()
+      await loginService.logout();
+      localStorage.removeItem('token');
       dispatch(resetOwnerState());
       navigate('/login')
     } catch (exception) {

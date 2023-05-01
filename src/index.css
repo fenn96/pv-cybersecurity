@@ -57,6 +57,18 @@ main {
   box-shadow: 0px 15px 50px rgb(16, 16, 16);
 }
 
+.navbar-nav .nav-item {
+  color: white;
+}
+
+.navvy:hover {
+  color: #FFC107;
+}
+
+.navbar-brand {
+  color: white;
+}
+
 /*.data {
   grid-gap: auto;
   display: grid;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useNavigate, NavLink } from "react-router-dom"
 import { setOwner } from '../reducers/ownerReducer'
 import { CategoryScale, LinearScale, ArcElement, PointElement, LineElement, Filler, Chart } from "chart.js";

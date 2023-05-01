@@ -27,7 +27,7 @@ const Register = (props) => {
       <div className='container' style={{ marginTop: '20vh'}}>
         <div className="m-5">
           <div className='img-background border-radius shadow-custom p-5' style={{ minHeight: 600 }}>
-            <p className='pb-3 fw-bold'><img src={logo} alt="logo" style={{ height: '32px', width: '32px'}} /> PV Solar Monitoring</p>
+            <p className='pb-3 fw-bold'><Link to="/"><img src={logo} alt="logo" style={{ height: '32px', width: '32px'}} /></Link> PV Solar Monitoring</p>
             <ErrorNotification error={props.error} />
             <MessageNotification message={props.message} />
             <div className='p-4'>

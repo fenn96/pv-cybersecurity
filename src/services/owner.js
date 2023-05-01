@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'https://solar-backend.herokuapp.com//api/owner/'
+const baseUrl = 'https://solar-backend.herokuapp.com/api/owner/'
 
 const signup = async credentials => {
   const response = await axios.post(baseUrl, credentials)

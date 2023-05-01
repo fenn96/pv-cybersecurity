@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'https://solar-backend.herokuapp.com//api/solar/'
+const baseUrl = 'https://solar-backend.herokuapp.com/api/solar/'
 
 const getSolarData = async token => {
   const response = await axios.get(baseUrl, {

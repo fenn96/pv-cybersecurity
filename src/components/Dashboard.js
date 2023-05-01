@@ -2,11 +2,16 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate, NavLink } from "react-router-dom"
 import { setOwner } from '../reducers/ownerReducer'
+import ChartStreaming from 'chartjs-plugin-streaming';
+import 'chartjs-adapter-luxon';
 import { CategoryScale, LinearScale, ArcElement, PointElement, LineElement, Filler, Chart } from "chart.js";
 import { Line, Doughnut } from 'react-chartjs-2';
 import ownerService from '../services/owner'
+import solarService from '../services/solar'
+import Weather from './Weather';
+import { ClipLoader } from 'react-spinners';
 
-Chart.register(CategoryScale, LinearScale, ArcElement, PointElement, LineElement, Filler)
+Chart.register(ChartStreaming, CategoryScale, LinearScale, ArcElement, PointElement, LineElement, Filler)
 
 const Dashboard = (props) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -14,46 +19,61 @@ const Dashboard = (props) => {
   const owner = useSelector(state => state.owner);
   const currentDate = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    const cookie = document.cookie
-      .split(';')
-      .find((c) => c.trim().startsWith('token='));
-
-    if (!cookie) {
-      navigate('/');
-    } else {
-      const token = cookie.split("=")[1];
-      console.log(token)
-
-      ownerService.getOwner({
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((data) => {
-        if (!data.authenticated) {
-          navigate('/');
-        } else {
-          dispatch(setOwner({
-            firstName: data.owner.firstName,
-            lastName: data.owner.lastName,
-            email: data.owner.email,
-            id: data.owner.id,
-            authenticated: data.authenticated,
-            solarData: data.owner.solarPanels[0].solarData
-          }));
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {
-        if (error.response.status === 401) {
-          navigate('/');
-        }
-      });
+      ownerService.getOwner(token)
+        .then((data) => {
+          if (!data.authenticated) {
+            navigate('/login');
+          } else {
+            dispatch(setOwner({
+              firstName: data.owner.firstName,
+              lastName: data.owner.lastName,
+              email: data.owner.email,
+              id: data.owner.id,
+              authenticated: data.authenticated,
+              type: data.owner.type,
+              geo: data.owner.geo,
+              solarData: data.owner.solarPanels[0].solarData
+            }));
+            if ( data.owner.type === "Admin") {
+              navigate('/admin');
+            }
+            console.log("test")
+            solarService.getWeatherData({
+              lat: data.owner.geo.lat,
+              lon: data.owner.geo.lon,
+              token: token
+            })
+              .then((data) => {
+                dispatch(setOwner({
+                  weather: {
+                    location: data.location,
+                    description: data.description,
+                    humidity: data.humidity,
+                    iconPath: data.iconPath,
+                    temp: data.temp,
+                    temp_feels_like: data.temp_feels_like,
+                    wind_speed: data.wind_speed
+                  }
+                }));
+                setIsLoading(false);
+              })
+              .catch((err) => {
+                console.log(err)
+              })
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          if (error.response.status === 401) {
+            navigate('/login');
+          }
+        });
     }
     
-    const timer = setInterval(() => {
+    /*const timer = setInterval(() => {
       const cookie = document.cookie
       .split(';')
       .find((c) => c.trim().startsWith('token='));
@@ -74,50 +94,52 @@ const Dashboard = (props) => {
     }, 2000);
 
     // Clear the timer when the component unmounts
-    return () => clearInterval(timer);
+    return () => clearInterval(timer);*/
     
-  },[])
+  ,[])
 
   if (isLoading) {
     return (
-      <div class='d-flex'>
+      <div className='d-flex'>
         <div>
           <div>
-            <div class="d-flex flex-column shadow-lg p-3 bg-dark min-vh-100">
-              <nav class='align-items-center'>
+            <div className="d-flex flex-column shadow-lg p-3 bg-dark min-vh-100">
+              <nav className='align-items-center'>
                 <NavLink to="/dashboard" className="nav-link pb-2 pt-2">
-                  <span class="material-symbols-outlined">dashboard</span>
+                  <span className="material-symbols-outlined">dashboard</span>
                 </NavLink>
                 <NavLink to="/analytics" className="nav-link pb-2">
-                  <span class="material-symbols-outlined">analytics</span>
+                  <span className="material-symbols-outlined">analytics</span>
                 </NavLink>
                 <NavLink className="nav-link pb-2">
-                  <span class="material-symbols-outlined">settings</span>
+                  <span className="material-symbols-outlined">settings</span>
                 </NavLink>
                 <NavLink onClick={props.logoutUser} className="nav-link pb-2" style={{ position: 'absolute', bottom: 0 }}>
-                  <span class="material-symbols-outlined">logout</span>
+                  <span className="material-symbols-outlined">logout</span>
                 </NavLink>
               </nav>
             </div>
           </div>
         </div>
-        <main class='container-fluid pt-3' style={{ height: '100vh' }}>
+        <main className='container-fluid pt-3' style={{ height: '100vh' }}>
           <h4>Dashboard</h4>
-          <p>Loading...</p>
+          <div className="d-flex" style={{ justifyContent: 'center', paddingTop: '40vh' }}>
+            <ClipLoader 
+              color="#fff"
+              loading={isLoading}
+              size={150}
+            />
+          </div>
         </main>
       </div>
     )
   }
 
-  // Filters solar data based on date
-  const filteredData = owner.solarData.filter(data => new Date(data.time) >= (new Date(Date.now() - 10 * 60 * 1000)))
 
   const voltage = {
-    labels: filteredData.map(data => new Date(data.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })),
     datasets: [
       {
         label: 'Voltage',
-        data: filteredData.map(data => data.voltage),
         backgroundColor: 'rgba(178, 222, 39, 0.2)',
         pointRadius: 0,
         fill: true,
@@ -129,11 +151,9 @@ const Dashboard = (props) => {
   }
 
   const current = {
-    labels: filteredData.map(data => new Date(data.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })),
     datasets: [
       {
         label: 'Current',
-        data: filteredData.map(data => data.current),
         backgroundColor: 'rgba(13, 180, 185, 0.2)',
         pointRadius: 0,
         fill: true,
@@ -145,11 +165,9 @@ const Dashboard = (props) => {
   }
 
   const power = {
-    labels: filteredData.map(data => new Date(data.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })),
     datasets: [
       {
         label: 'Power',
-        data: filteredData.map(data => data.power),
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         pointRadius: 0,
         fill: true,
@@ -184,25 +202,132 @@ const Dashboard = (props) => {
     ]
   }
 
-  const options = {
-    aspectRatio: 2.6,
+  const voltage_options = {
     scales: {
       y:
         {
           grid: {
             color: 'rgb(47, 47, 47)'
           },
-          min: 0,
-          max: 100
+          suggestedMin: 0,
+          suggestedMax: 20
         },
       x: {
+        type: 'realtime',
+        realtime: {
+          delay: 3000,
+          onRefresh: chart => {
+            solarService.getSolarData(token)
+            .then((data) => {
+              if (data.authenticated) {
+                let lastSolarDatapoint = data.solarData[data.solarData.length - 1];
+                let lastChartDatapoint = chart.data.datasets[0].data[chart.data.datasets[0].data.length - 1] || 0;
+                if (lastSolarDatapoint._id === lastChartDatapoint.id ) {
+                } else {
+                  chart.data.datasets.forEach(dataset => {
+                    dataset.data.push({
+                      id: lastSolarDatapoint._id,
+                      x: Date.now(),
+                      y: lastSolarDatapoint.voltage
+                    })
+                  })
+                }
+
+                chart.update('quiet');
+              }
+      })
+          }
+        },
+        grid: {
+          color: 'rgb(47, 47, 47)'
+        }
+      }
+    }
+  };
+
+  const current_options = {
+    scales: {
+      y:
+        {
           grid: {
             color: 'rgb(47, 47, 47)'
           },
-          ticks: {
-            maxTicksLimit: 5
+          suggestedMin: 0,
+          suggestedMax: 2.5
+        },
+      x: {
+        type: 'realtime',
+        realtime: {
+          delay: 3000,
+          onRefresh: chart => {
+            solarService.getSolarData(token)
+            .then((data) => {
+              if (data.authenticated) {
+                let lastSolarDatapoint = data.solarData[data.solarData.length - 1];
+                let lastChartDatapoint = chart.data.datasets[0].data[chart.data.datasets[0].data.length - 1] || 0;
+                if (lastSolarDatapoint._id === lastChartDatapoint.id ) {
+                } else {
+                  chart.data.datasets.forEach(dataset => {
+                    dataset.data.push({
+                      id: lastSolarDatapoint._id,
+                      x: Date.now(),
+                      y: lastSolarDatapoint.current
+                    })
+                  })
+                }
+
+                chart.update('quiet');
+              }
+      })
           }
+        },
+        grid: {
+          color: 'rgb(47, 47, 47)'
         }
+      }
+    }
+  };
+
+  const power_options = {
+    scales: {
+      y:
+        {
+          grid: {
+            color: 'rgb(47, 47, 47)'
+          },
+          suggestedMin: 0,
+          suggestedMax: 50
+        },
+      x: {
+        type: 'realtime',
+        realtime: {
+          delay: 3000,
+          onRefresh: chart => {
+            solarService.getSolarData(token)
+            .then((data) => {
+              if (data.authenticated) {
+                let lastSolarDatapoint = data.solarData[data.solarData.length - 1];
+                let lastChartDatapoint = chart.data.datasets[0].data[chart.data.datasets[0].data.length - 1] || 0;
+                if (lastSolarDatapoint._id === lastChartDatapoint.id ) {
+                } else {
+                  chart.data.datasets.forEach(dataset => {
+                    dataset.data.push({
+                      id: lastSolarDatapoint._id,
+                      x: Date.now(),
+                      y: lastSolarDatapoint.power
+                    })
+                  })
+                }
+
+                chart.update('quiet');
+              }
+      })
+          }
+        },
+        grid: {
+          color: 'rgb(47, 47, 47)'
+        }
+      }
     }
   };
 
@@ -217,66 +342,71 @@ const Dashboard = (props) => {
       borderWidth: 1
     }
   }
-
+  console.log(owner)
   return (
-    <div class='d-flex'>
+    <div className='d-flex'>
       <div>
         <div>
-          <div class="d-flex flex-column shadow-lg p-3 bg-dark min-vh-100">
-            <nav class='align-items-center'>
+          <div className="d-flex flex-column shadow-lg p-3 bg-dark min-vh-100">
+            <nav className='align-items-center'>
               <NavLink to="/dashboard" className="nav-link pb-2 pt-2">
-                <span class="material-symbols-outlined">dashboard</span>
+                <span className="material-symbols-outlined">dashboard</span>
               </NavLink>
               <NavLink to="/analytics" className="nav-link pb-2">
-                <span class="material-symbols-outlined">analytics</span>
+                <span className="material-symbols-outlined">analytics</span>
               </NavLink>
               <NavLink className="nav-link">
-                <span class="material-symbols-outlined">settings</span>
+                <span className="material-symbols-outlined">settings</span>
               </NavLink>
               <NavLink onClick={props.logoutUser} className="nav-link pb-2" style={{ position: 'absolute', bottom: 0 }}>
-                <span class="material-symbols-outlined">logout</span>
+                <span className="material-symbols-outlined">logout</span>
               </NavLink>
             </nav>
           </div>
         </div>
       </div>
-      <main class='container-fluid p-3' style={{ height: '100vh' }}>
+      <main className='container-fluid p-3' style={{ height: '100vh' }}>
         <h4>Dashboard</h4>
         <p>{currentDate}</p>
-        <div class='row gx-2 pb-2 d-flex flex-wrap'>
-          <div class='col-6'>
-            <div class="card bg-dark p-3">
-                <p class='text-center'>Battery Level</p>
+        <div className='row gx-2 pb-2 d-flex flex-wrap'>
+          <div className='col-6'>
+            <div className="card bg-dark p-3">
+                <p className='text-center'>Battery Level</p>
                 <Doughnut data={battery} options={doughnutOptions} />
                 <h1 style={{ position: 'absolute', width: '100%', top: '80%', left: 0, textAlign: 'center', marginTop: '-28px',  lineHeight: '20px'}}>75%</h1>
             </div>
           </div>
-          <div class='col-6'>
-            <div class="card bg-dark p-3">
-                <p class='text-center'>Power Consumption</p>
+          <div className='col-6'>
+            <div className="card bg-dark p-3">
+                <p className='text-center'>Power Consumption</p>
                 <Doughnut data={power_consumption} options={doughnutOptions} />
                 <h1 style={{ position: 'absolute', width: '100%', top: '80%', left: 0, textAlign: 'center', marginTop: '-28px',  lineHeight: '20px'}}>850w</h1>
             </div>
           </div>
         </div>
-        <div class='row gx-2 d-flex flex-wrap'>
-          <div class='col-4'>
-            <div class="card bg-dark p-3">
-                <p class='text-center'>Voltage</p>
-                <Line data={voltage} options={options} />
+        <div className='row gx-2 d-flex flex-wrap'>
+          <div className='col-4'>
+            <div className="card bg-dark p-3">
+                <p className='text-center'>Voltage</p>
+                <Line data={voltage} options={voltage_options} />
             </div>
           </div>
-          <div class='col-4'>
-            <div class="card bg-dark p-3">
-                <p class='text-center'>Current</p>
-                <Line data={current} options={options} />
+          <div className='col-4'>
+            <div className="card bg-dark p-3">
+                <p className='text-center'>Current</p>
+                <Line data={current} options={current_options} />
             </div>
           </div>
-          <div class='col-4'>
-            <div class="card bg-dark p-3">
-                <p class='text-center'>Power</p>
-                <Line data={power} options={options} />
+          <div className='col-4'>
+            <div className="card bg-dark p-3">
+                <p className='text-center'>Power</p>
+                <Line data={power} options={power_options} />
             </div>
+          </div>
+        </div>
+        <div className='row gx-2 pt-2 d-flex'>
+          <div className='col-12'>
+            <Weather weather={owner.weather} />
           </div>
         </div>
       </main>

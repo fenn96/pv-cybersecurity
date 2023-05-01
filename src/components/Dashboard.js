@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate, NavLink } from "react-router-dom"
+import { useNavigate, Link, NavLink } from "react-router-dom"
 import { setOwner } from '../reducers/ownerReducer'
 import ChartStreaming from 'chartjs-plugin-streaming';
 import 'chartjs-adapter-luxon';
@@ -10,6 +10,7 @@ import ownerService from '../services/owner'
 import solarService from '../services/solar'
 import Weather from './Weather';
 import { ClipLoader } from 'react-spinners';
+import logo from '../img/logo.png';
 
 Chart.register(ChartStreaming, CategoryScale, LinearScale, ArcElement, PointElement, LineElement, Filler)
 
@@ -110,6 +111,7 @@ const Dashboard = (props) => {
           <div>
             <div className="d-flex flex-column shadow-lg p-3 bg-dark min-vh-100">
               <nav className='align-items-center'>
+                <Link className='navbar-brand mb-5'><img src={logo} alt="logo" style={{ height: '36px', width: '36px', marginBottom: '20px'}} /></Link>
                 <NavLink to="/dashboard" className="nav-link text-warning pb-2 pt-2">
                   <span className="material-symbols-outlined">dashboard</span>
                 </NavLink>
@@ -147,6 +149,7 @@ const Dashboard = (props) => {
           <div>
             <div className="d-flex flex-column shadow-lg p-3 bg-dark min-vh-100">
               <nav className='align-items-center'>
+                <Link className='navbar-brand mb-5'><img src={logo} alt="logo" style={{ height: '36px', width: '36px', marginBottom: '20px'}} /></Link>
                 <NavLink to="/dashboard" className="nav-link text-warning pb-2 pt-2">
                   <span className="material-symbols-outlined">dashboard</span>
                 </NavLink>
@@ -387,6 +390,7 @@ const Dashboard = (props) => {
         <div>
           <div className="d-flex flex-column shadow-lg p-3 bg-dark min-vh-100">
             <nav className='align-items-center'>
+              <Link className='navbar-brand mb-5'><img src={logo} alt="logo" style={{ height: '36px', width: '36px', marginBottom: '20px'}} /></Link>
               <NavLink to="/dashboard" className="nav-link text-warning pb-2 pt-2">
                 <span className="material-symbols-outlined">dashboard</span>
               </NavLink>

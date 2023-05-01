@@ -62,7 +62,7 @@ const Home = () => {
           <div className='card border-light shadow'>
             <div className="card-body">
               <div className='text-center text-warning'>
-                <span className="material-symbols-outlined" style={{ fontSize: '5rem' }}>warning</span>
+                <span className="material-symbols-outlined" style={{ fontSize: '5rem' }}>email</span>
               </div>
               <h4 className="card-title text-center">Incident Response</h4>
               <p className="card-text text-center text-secondary">Solar Dashboard provides a comprehensive incident response plan for quick response to cyberattacks on solar panels.</p>

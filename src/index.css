@@ -69,6 +69,10 @@ main {
   color: white;
 }
 
+.ml-auto {
+  margin-left: auto;
+}
+
 /*.data {
   grid-gap: auto;
   display: grid;

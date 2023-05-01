@@ -1,5 +1,8 @@
 import { useField } from '../hooks/index'
 import { Link } from "react-router-dom"
+import ErrorNotification from './ErrorNotification';
+import MessageNotification from './MessageNotification';
+import logo from '../img/logo.png';
 
 const Login = (props) => {
     const email = useField('text')
@@ -14,10 +17,12 @@ const Login = (props) => {
       }
   
     return (
-      <div className='container'>
+      <div className='container' style={{ marginTop: '24vh'}}>
         <div className="m-5">
           <div className='img-background border-radius shadow-custom p-5' style={{ minHeight: 600 }}>
-            <p className='pb-3 fw-bold'>PV Solar Monitoring</p>
+            <p className='pb-3 fw-bold'><img src={logo} alt="logo" style={{ height: '32px', width: '32px'}} /> PV Solar Monitoring</p>
+            <ErrorNotification error={props.error} />
+            <MessageNotification message={props.message} />
             <div className='p-4'>
               <h1 className='pb-2 pt-5'>Sign into your Account<span className='text-warning'>.</span></h1>
               <div className='pb-5 text-secondary'>

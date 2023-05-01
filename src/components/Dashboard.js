@@ -15,6 +15,7 @@ Chart.register(ChartStreaming, CategoryScale, LinearScale, ArcElement, PointElem
 
 const Dashboard = (props) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [hasSolar, setHasSolar] = useState(false);
   const dispatch = useDispatch();
   const owner = useSelector(state => state.owner);
   const currentDate = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
@@ -39,29 +40,34 @@ const Dashboard = (props) => {
             if ( data.owner.type === "Admin") {
               navigate('/admin');
             }
-            console.log("test")
-            solarService.getWeatherData({
-              lat: data.owner.geo.lat,
-              lon: data.owner.geo.lon,
-              token: token
-            })
-              .then((data) => {
-                dispatch(setOwner({
-                  weather: {
-                    location: data.location,
-                    description: data.description,
-                    humidity: data.humidity,
-                    iconPath: data.iconPath,
-                    temp: data.temp,
-                    temp_feels_like: data.temp_feels_like,
-                    wind_speed: data.wind_speed
-                  }
-                }));
-                setIsLoading(false);
+            if (data.owner.solarPanels.length > 0) {
+              setHasSolar(true);
+              solarService.getWeatherData({
+                lat: data.owner.geo.lat,
+                lon: data.owner.geo.lon,
+                token: token
               })
-              .catch((err) => {
-                console.log(err)
-              })
+                .then((data) => {
+                  dispatch(setOwner({
+                    weather: {
+                      location: data.location,
+                      description: data.description,
+                      humidity: data.humidity,
+                      iconPath: data.iconPath,
+                      temp: data.temp,
+                      temp_feels_like: data.temp_feels_like,
+                      wind_speed: data.wind_speed
+                    }
+                  }));
+                  setIsLoading(false);
+                })
+                .catch((err) => {
+                  console.log(err)
+                })
+            } else {
+              setHasSolar(false);
+              setIsLoading(false);
+            }
           }
         })
         .catch((error) => {
@@ -107,7 +113,7 @@ const Dashboard = (props) => {
                 <NavLink to="/dashboard" className="nav-link text-warning pb-2 pt-2">
                   <span className="material-symbols-outlined">dashboard</span>
                 </NavLink>
-                <NavLink to="/analytics" className="nav-link pb-2">
+                <NavLink className="nav-link pb-2">
                   <span className="material-symbols-outlined">analytics</span>
                 </NavLink>
                 <NavLink className="nav-link pb-2">
@@ -128,6 +134,39 @@ const Dashboard = (props) => {
               loading={isLoading}
               size={150}
             />
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  if (!hasSolar) {
+    return (
+      <div className='d-flex'>
+        <div>
+          <div>
+            <div className="d-flex flex-column shadow-lg p-3 bg-dark min-vh-100">
+              <nav className='align-items-center'>
+                <NavLink to="/dashboard" className="nav-link text-warning pb-2 pt-2">
+                  <span className="material-symbols-outlined">dashboard</span>
+                </NavLink>
+                <NavLink className="nav-link pb-2">
+                  <span className="material-symbols-outlined">analytics</span>
+                </NavLink>
+                <NavLink className="nav-link pb-2">
+                  <span className="material-symbols-outlined">settings</span>
+                </NavLink>
+                <NavLink onClick={props.logoutUser} className="nav-link pb-2" style={{ position: 'absolute', bottom: 0 }}>
+                  <span className="material-symbols-outlined">logout</span>
+                </NavLink>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <main className='container-fluid pt-3' style={{ height: '100vh' }}>
+          <h4>Dashboard</h4>
+          <div className="d-flex" style={{ justifyContent: 'center', paddingTop: '40vh' }}>
+            No Solar Panel Connected With Account
           </div>
         </main>
       </div>
@@ -351,7 +390,7 @@ const Dashboard = (props) => {
               <NavLink to="/dashboard" className="nav-link text-warning pb-2 pt-2">
                 <span className="material-symbols-outlined">dashboard</span>
               </NavLink>
-              <NavLink to="/analytics" className="nav-link pb-2">
+              <NavLink className="nav-link pb-2">
                 <span className="material-symbols-outlined">analytics</span>
               </NavLink>
               <NavLink className="nav-link">

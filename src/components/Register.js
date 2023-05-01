@@ -1,5 +1,8 @@
 import { useField } from '../hooks/index'
 import { Link } from "react-router-dom"
+import logo from '../img/logo.png';
+import ErrorNotification from './ErrorNotification';
+import MessageNotification from './MessageNotification';
 
 const Register = (props) => {
 
@@ -11,7 +14,6 @@ const Register = (props) => {
   
     const handleSubmit = (e) => {
       e.preventDefault()
-      console.log(firstName)
       props.registerUser({
         firstName: firstName.value,
         lastName: lastName.value,
@@ -22,10 +24,12 @@ const Register = (props) => {
     }
 
     return (
-      <div className='container'>
+      <div className='container' style={{ marginTop: '20vh'}}>
         <div className="m-5">
           <div className='img-background border-radius shadow-custom p-5' style={{ minHeight: 600 }}>
-            <p className='pb-3 fw-bold'>PV Solar Monitoring</p>
+            <p className='pb-3 fw-bold'><img src={logo} alt="logo" style={{ height: '32px', width: '32px'}} /> PV Solar Monitoring</p>
+            <ErrorNotification error={props.error} />
+            <MessageNotification message={props.message} />
             <div className='p-4'>
             <h1 className='pb-2 pt-5'>Create a new account<span className='text-warning'>.</span></h1>
             <div className='pb-5 text-secondary'>

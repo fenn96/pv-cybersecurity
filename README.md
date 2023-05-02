@@ -1,70 +1,45 @@
-# Getting Started with Create React App
+# PV Solar Dashboard with AI-based Cybersecurity Detection
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a web application that serves as a dashboard for monitoring solar panel installations, along with an AI-based cybersecurity detection system that helps identify potential threats to the system.
 
-## Available Scripts
+The dashboard is built using the following technologies:
 
-In the project directory, you can run:
+* Node.js: A JavaScript runtime that allows us to run JavaScript code outside of a web browser, making it possible to build web applications and servers using JavaScript.
+* MongoDB: A NoSQL document database that stores data in JSON-like documents with dynamic schemas, allowing for flexible data modeling.
+* Express: A web application framework for Node.js that provides a set of features for building web applications, including routing, middleware, and handling HTTP requests and responses.
+* React: A JavaScript library for building user interfaces that allows for the creation of reusable UI components.
+* JavaScript: A programming language used for building web applications.
 
-### `npm start`
+# Getting Started
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+To get started with this project, you'll need to have the following installed on your computer:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. Clone the repository: git clone https://github.com/fenn96/pv-cybersecurity.git
+2. Navigate to the project directory: cd solar-dashboard
+3. Install dependencies: npm install
+4. Start the server: npm run dev
+5. Open the web application in your browser: http://localhost:5173
 
-### `npm test`
+Clone backend repository.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# How it Works
 
-### `npm run build`
+The solar dashboard allows users to monitor solar panel installations and view data related to their performance. Additionally, the dashboard includes an AI-based cybersecurity detection system that helps identify potential threats to the system.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The AI-based cybersecurity detection system uses machine learning algorithms to analyze data from the solar panel installations and identify potential cybersecurity threats. The system is designed to learn over time and improve its ability to detect threats as it receives more data.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Contributing
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+We welcome contributions from the community! If you would like to contribute to this project, please follow these steps:
 
-### `npm run eject`
+# Fork the repository.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Create a new branch: git checkout -b my-new-feature
+2. Make changes to the code.
+3. Commit your changes: git commit -am 'Add some feature'
+4. Push the branch: git push origin my-new-feature
+5. Create a new pull request.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# License
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License. 

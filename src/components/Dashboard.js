@@ -256,7 +256,7 @@ const Dashboard = (props) => {
       x: {
         type: 'realtime',
         realtime: {
-          delay: 3000,
+          delay: 1000,
           onRefresh: chart => {
             solarService.getSolarData(token)
             .then((data) => {
@@ -299,7 +299,7 @@ const Dashboard = (props) => {
       x: {
         type: 'realtime',
         realtime: {
-          delay: 3000,
+          delay: 1000,
           onRefresh: chart => {
             solarService.getSolarData(token)
             .then((data) => {
@@ -342,7 +342,7 @@ const Dashboard = (props) => {
       x: {
         type: 'realtime',
         realtime: {
-          delay: 3000,
+          delay: 1000,
           onRefresh: chart => {
             solarService.getSolarData(token)
             .then((data) => {
